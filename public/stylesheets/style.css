@@ -34,6 +34,8 @@ nav span {
 #ErrorMsgs { 
     color: #f61; font-size: smaler
 }
+.right {float: right;}
+
 form.search_form,
 table.questions {
   padding-bottom: 20px;
