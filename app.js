@@ -28,6 +28,29 @@ app.use(session());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Middleware de auto-logout
+var maxTimeMilliseconds = 120000;
+app.use(function(req, res, next) {
+    
+  // Verificar si el usuario tiene la sesión iniciada
+  if (req.session.user) {
+    var lastAccess = Date.now();
+    console.log('**** Seconds Ellapsed:', (lastAccess - req.session.user.lastAccess)/1000,' ****');
+      
+    // Si el usuario lleva inactivo más de 2 minutos, destruir la sesión y redirigir a la página de login
+    if (req.session.user.lastAccess && (lastAccess - req.session.user.lastAccess) > maxTimeMilliseconds) {
+      delete req.session.user;
+      res.redirect("/login");
+    }
+      
+    // Actualizar el valor de lastAccess en la variable de sesión
+    else
+      req.session.user.lastAccess = lastAccess;
+  }
+    
+  next();
+});
+
 // Helpers dinamicos:
 app.use(function(req, res, next) {
 
